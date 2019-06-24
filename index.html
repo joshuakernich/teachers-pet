@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Teacher's Pet</title>
   <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
   <style type="text/css">
@@ -15,10 +16,17 @@
       font-size: 14px;
       line-height: 1.7em;
       color: #666;
+      background: #f5f5ee;
+
     }
 
     h1,h2,h3,h4{
       font-family: 'Roboto Slab', serif;
+    }
+
+    h2{
+      color: #999;
+      font-size: 18px;
     }
 
     .header{
@@ -130,7 +138,7 @@
       height: 50px;
       line-height: 50px;
       text-align: center;
-      color: #999;
+      color: #324A5E;
       font-size: 20px;
       background: none;
 
@@ -147,29 +155,30 @@
       height: 50px;
       line-height: 50px;
       text-align: center;
-      color: #999;
+      color: #324A5E;
       font-size: 20px;
       background: none;
+      font-family: 'Roboto Slab', serif;
     }
 
     .mood-axis.left{
-      left: -175px;
+      left: -160px;
       transform: rotate(-90deg);
-      color: #FF9955;
     }
 
     .mood-axis.right{
-      right: -175px;
+      right: -160px;
       transform: rotate(90deg);
-      color: #55DD99;
     }
 
     .mood-label.left{
       left: 15px;
+      display: none;
     }
 
     .mood-label.right{
       right: 15px;
+      display: none;
     }
 
     .mood-label.middle,.mood-axis.middle{
@@ -210,7 +219,7 @@
       left: -25vw;
       top: -1px;
 
-      background: linear-gradient(to right, white, #ddd, white);
+      background: linear-gradient(to right, transparent, #324A5E, transparent);
     }
 
     .mood-plane-axes:after{
@@ -221,7 +230,7 @@
       position: absolute;
       top: -25vh;
       left: -1px;
-      background: linear-gradient(to bottom, white, #ddd, white);
+      background: linear-gradient(to bottom, transparent, #324A5E, transparent);
     }
 
     .character-path-spot{
@@ -236,7 +245,7 @@
       width: 20px;
       height: 20px;
       background: white;
-      border: 5px solid #80C080;
+      border: 5px solid #FF7058;
       box-sizing: border-box;
       border-radius: 100px;
     }
@@ -273,8 +282,8 @@
       position: absolute;
       right: 0px;
       bottom: 0px;
-      stroke: #80C080;
-      stroke-width: 7px;
+      stroke: #FF7058;
+      stroke-width: 5px;
       fill: none;
 
     }
@@ -285,17 +294,17 @@
       margin-right: 10px;
       font-size: 20px;
       display: inline-block;
-      color: #B380B3;
+      color: #324A5E;
     }
 
     .avatar-panel{
-      background: #B380B3;
+      background: #324A5E;
       border-radius: 5px;
       padding: 10px;
       position: absolute;
       bottom: 150px;
-      width: 180px;
-      left: -90px;
+      width: 200px;
+      left: -100px;
       box-sizing: border-box;
       text-align: center;
     }
@@ -319,31 +328,48 @@
 
     .avatar-panel button{
       width: 100%;
-      color: #B380B3;
+      color: #324A5E;
       background: none;
-      padding: 0px 0px 5px 0px;
+      padding: 0px 0px 5px 10px;
       pointer-events: none;
+      text-align: left;
+      position: relative;
     }
 
     .avatar-panel button.ready{
       background: white;
-      color: #B380B3;
       border-radius: 0px;
-      padding: 5px;
+      padding: 5px 5px 5px 10px;
       margin-bottom: 3px;
       pointer-events: auto;
+    }
+
+    .avatar-panel button.ready:after{
+      content: "►";
+      background: orange;
+      color: white;
+      border-radius: 20px;
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      line-height: 15px;
+      text-align: center;
+      font-size: 9px;
+      padding-left: 2px;
     }
 
     .avatar-panel:after{
       content: "";
       width: 0; 
       height: 0; 
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 15px solid #B380B3;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 15px solid #324A5E;
       position: absolute;
       bottom: -15px;
-      left: 80px;
+      left: 95px;
     }
 
     b{
@@ -361,7 +387,7 @@
       left: 0px;
       right: 0px;
       bottom: 0px;
-      background: rgba(240,240,240,0.6);
+      background: rgba(50,74,94,0.6);
       overflow-y: auto;
       padding: 50px;
     }
@@ -396,14 +422,11 @@
       display: block;
       width: 100%;
       font-weight: bold;
+      font-family: 'Roboto Slab', serif;
     }
 
-    .reward-button{
-      background: white;
-      color: orange;
-    }
+    .complete-button, .reward-button{
 
-    .complete-button{
       background: orange;
     }
 
@@ -552,7 +575,7 @@
 
      .reward{
       border-radius: 10px;
-      background: white;
+      background: rgba(255,255,255,0.1);
       color: white;
 
 
@@ -590,7 +613,6 @@
       top: 0px;
       left: 0px;
       border-radius: 10px;
-      border-right: 1px solid #B380B3;
      }
 
      .reward:nth-of-type(1) .reward-bar{ background:#F86363; }
@@ -617,8 +639,7 @@
       right: 0px;
       margin: auto;
       padding: 50px;
-      background: #B380B3;
-      border: 1px solid #ddd;
+      background: #324A5E;
       max-width: 500px;
       display: none;
      }
@@ -630,7 +651,7 @@
      .reward-list{
       min-height: 128px;
       padding-left: 80px;
-      background-image: url('./man.png');
+      background-image: url('./man-shiny.png');
       background-size: 128px;
       background-position: -32px;
       background-repeat: no-repeat;
@@ -769,8 +790,8 @@
     <div class='mood-plane-axes'></div>
     <div class='mood-label left middle'>Cortisol</div>
     <div class='mood-label right middle'>DHEA</div>
-    <div class='mood-label top center'>Sympathetic</div>
-    <div class='mood-label bottom center'>Parasympathetic</div>
+    <div class='mood-label top center'>High Energy</div>
+    <div class='mood-label bottom center'>Low Energy</div>
     <div class='mood-axis left middle'>Negative Emotions</div>
     <div class='mood-axis right middle'>Positive Emotions</div>
     <svg preserveAspectRatio=none width='100%' height='100%' viewBox='0 0 100 100'>
@@ -790,13 +811,13 @@
       <div class='avatar-panel'>
         <h1 class="avatar-panel-day">Day 1</h1>
         <div class='avatar-panel-sequence'>
-          <button class='ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>A Little Lesson</button>
+          <button class='ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>Lesson</button>
           <button data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
           
           <button data-points='1,0,0,0,0' data-modal='.modal-watch'>Watch This</button>
-          <button data-points='0,2,0,1,1' data-modal='.modal-exercise'>A Handy Exercise</button>
-          <button data-points='0,2,3,0,1' data-modal='tutorial'>A Quick Reflection</button>
-          <button data-points='2,2,1,2,0' data-modal='.modal-mission'>A Mission in the Wild</button>
+          <button data-points='0,2,0,1,1' data-modal='.modal-exercise'>Exercise</button>
+          <button data-points='0,2,3,0,1' data-modal='tutorial'>Personal Reflection</button>
+          <button data-points='2,2,1,2,0' data-modal='.modal-mission'>Personal Mission</button>
           <button data-points='0,0,1,0,2' data-modal='.modal-thought'>Food for Thought</button>
         </div>
         <div class='avatar-panel-finish'>
@@ -843,15 +864,15 @@
       </div>
 
       <div class='modal-panel modal-lesson'>
-        <h1>A Little Lesson</h1>
+        <h1>Lesson</h1>
         <p>Recall the weather over the past 24 hours. Was it sunny? Rainy? Hot? Cold? A bit of everything?</p>
-        <div class='image-set'><img width=64px src='cloudy.png'/><img width=64px  src='rain.png'/><img width=64px src='sunny.png'/><img width=64px src='snowflake.png'/><img width=64px src='man-head-think-up.png'/></div>
+        <div class='image-set'><img width=64px src='cloudy.png'/><img width=64px  src='rain.png'/><img width=64px src='sunny.png'/><img width=64px src='snowflake.png'/></div>
         <p>Now reflect on the same 24 hours - how did you feel? Were you happy? Angry? Excited? Maybe ‘four seasons in one day’ like the weather?</p>
-        <div class='image-set'><img width=64px src='man-head-think.png'/><img width=64px src='content.png'/><img width=64px src='angry.png'/><img width=64px src='excited.png'/></div>
+        <div class='image-set'><img width=64px src='content.png'/><img width=64px src='angry.png'/><img width=64px src='excited.png'/></div>
         <p>Looking at the weather over time, we see patterns. We call this ‘the climate’.</p>
-        <div class='image-set'><img width=64px src='global-warming.png'/><img width=64px src='man-head-think-up.png'/></div>
+        <div class='image-set'><img width=64px src='global-warming.png'/></div>
         <p>And if we look at our emotions, feelings and thoughts over time, we can start to see patterns too. That's what this programme is for. To help see patterns that are helpful and unhelpful to your health and wellbeing.</p>
-        <div class='image-set'><img width=64px src='man-head-think.png'/><img width=64px src='analysis.png'/></div>
+        <div class='image-set'><img width=64px src='analysis.png'/></div>
         <p>If ‘knowledge is power’, then self knowledge is self empowerment.</p>
         <p>This course is designed to help you enhance your personal wellbeing with care, compassion and kindness for yourself.</p>
         <button class='complete-button'>COMPLETE</button>
@@ -862,12 +883,12 @@
         <button class='complete-button'>COMPLETE</button>
       </div>
       <div class='modal-panel modal-exercise'>
-        <h1>A Handy Exercise</h1>
+        <h1>Exercise</h1>
         <iframe width="500" height="300" src="https://www.youtube.com/embed/5DqTuWve9t8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <button class='complete-button'>COMPLETE</button>
       </div>
       <div class='modal-panel modal-mission'>
-        <h1>A Mission in the Wild</h1><br>
+        <h1>Personal Mission</h1><br>
         Take a few minutes to write down as many things as you can think of that make you happy.
         <div class='list-of-things'>
           <ul>
@@ -888,7 +909,7 @@
           <li class='reward'></li>
           <li class='reward'></li>
         </ul>
-        <button class='reward-button'>THANKS!</button>
+        <button class='reward-button'>CONTINUE</button>
       </div>
     <div class='modal-panel modal-thought'>
       <h1>Food for Thought</h1>
@@ -900,7 +921,7 @@
   <div class='tutorial'>
       
       <div class='tutorial-segment middle'>
-      <h1>A Quick Reflection</h1><br><br>
+      <h1>Personal Reflection</h1><br><br>
       Looking at the grid, this (x) axis represents negative emotions and positive emotions and this (y) axis represents high heart rate and low heart rate. [The centre line represents normal heart rate.]<br><br><button class='next-button'>NEXT</button></div>
       <div class='tutorial-segment top-left'>Over the last 3 weeks or so, what emotions have you felt that are <b>negative</b> and your heart rate is <b>high</b>?
         <ul>
