@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher's Pet</title>
+  <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+  <style type="text/css">
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap');
+
+    body{
+      padding: 0px;
+      margin: 0px;
+      overflow: hidden;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 14px;
+      line-height: 1.7em;
+      color: #666;
+    }
+
+    h1,h2,h3,h4{
+      font-family: 'Roboto Slab', serif;
+    }
+
+    .header{
+      background: #eee;
+      text-align: center;
+    }
+
+    .elements{
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .element{
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+      background: white;
+      margin: 10px 5px;
+      display: inline-block;
+      box-shadow: 0px -1px #ddd;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .element:after{
+      content: "";
+      background-size: 16px;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+    }
+
+    .element:before{
+      content: "";
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      height: 50%;
+      background: #99ff55;
+
+    }
+
+    .element:nth-of-type(1):before{ background:#80C080; height:35%; }
+    .element:nth-of-type(2):before{ background:#B380B3; height:80%; }
+    .element:nth-of-type(3):before{ background:#99B3FF; height:40%; }
+    .element:nth-of-type(4):before{ background:#FF9955; height:55%; }
+
+    .element:nth-of-type(1):after{ background-image: url('./heart.png');}
+    .element:nth-of-type(2):after{ background-image: url('./flex.png');}
+    .element:nth-of-type(3):after{ background-image: url('./brain.png');}
+    .element:nth-of-type(4):after{ background-image: url('./smiling.png');}
+
+    .battery{
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+
+    .battery-body, .battery-terminal{
+      height: 25px;
+      width: 40px;
+      border-radius: 3px;
+      box-shadow: 0px -1px #ddd;
+      display: inline-block;
+      background: white;
+      vertical-align: middle;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .battery-body:before{
+      content: "";
+      width: 70%;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      bottom: 0px;
+      background: #55dd99;
+    }
+    
+
+    .battery-terminal{
+      height: 10px;
+      width: 5px;
+      margin-left: 2px;
+    }
+
+    .mood-plane, .character-path{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+    }
+
+
+    .mood-label{
+      position: absolute;
+      display: inline-block;
+      background: #f5f5f5;
+      border-radius: 10px;
+      margin: auto;
+      width: 170px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      background: none;
+
+      font-family: 'Roboto Slab', serif;
+    }
+
+    .mood-axis{
+      position: absolute;
+      display: inline-block;
+      background: #f5f5f5;
+      border-radius: 10px;
+      margin: auto;
+      width: 400px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      background: none;
+    }
+
+    .mood-axis.left{
+      left: -175px;
+      transform: rotate(-90deg);
+      color: #FF9955;
+    }
+
+    .mood-axis.right{
+      right: -175px;
+      transform: rotate(90deg);
+      color: #55DD99;
+    }
+
+    .mood-label.left{
+      left: 15px;
+    }
+
+    .mood-label.right{
+      right: 15px;
+    }
+
+    .mood-label.middle,.mood-axis.middle{
+      top: 0px;
+      bottom: 0px;
+    }
+
+    .mood-label.center{
+      left: 0px;
+      right: 0px;
+    }
+
+    .mood-label.top{
+      top: 15px;
+    }
+
+    .mood-label.bottom{
+      bottom: 15px;
+    }
+
+    .mood-plane-axes{
+      position: absolute;
+      left: 0px;
+      right:  0px;
+      top: 0px;
+      bottom: 0px;
+      margin: auto;
+      width: 0px;
+      height: 0px;
+    }
+
+    .mood-plane-axes:before{
+      content: "";
+      width: 50vw;
+      height: 2px;
+      background: #ddd;
+      position: absolute;
+      left: -25vw;
+      top: -1px;
+
+      background: linear-gradient(to right, white, #ddd, white);
+    }
+
+    .mood-plane-axes:after{
+      content: "";
+      height: 50vh;
+      width: 2px;
+      background: #ddd;
+      position: absolute;
+      top: -25vh;
+      left: -1px;
+      background: linear-gradient(to bottom, white, #ddd, white);
+    }
+
+    .character-path-spot{
+      position: absolute;
+    }
+
+    .character-path-spot:after{
+      content:"";
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 5px solid #80C080;
+      box-sizing: border-box;
+      border-radius: 100px;
+    }
+
+    .character-path-spot:last-of-type{
+      display: none;
+    }
+
+    svg path:last-of-type{
+      display: none;
+    }
+
+    .character{
+      position: absolute;
+      left: 60%;
+      top: 60%;
+      width: 0px;
+      height: 0px;
+    }
+
+   
+    .character:after{
+      content: "";
+      width: 128px;
+      height: 128px;
+      position: absolute;
+      top: -128px;
+      left: -64px;
+      background-image: url('./man.png');
+      background-size: 100%;
+    }
+
+    svg{
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+      stroke: #80C080;
+      stroke-width: 7px;
+      fill: none;
+
+    }
+
+    h1{
+      margin: 0px;
+      padding: 0px;
+      margin-right: 10px;
+      font-size: 20px;
+      display: inline-block;
+      color: #B380B3;
+    }
+
+    .avatar-panel{
+      background: #B380B3;
+      border-radius: 5px;
+      padding: 10px;
+      position: absolute;
+      bottom: 150px;
+      width: 180px;
+      left: -90px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .avatar-panel h1{
+      display: block;
+      color: white;
+    }
+
+    .avatar-panel p{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .avatar-panel-sequence{
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .avatar-panel button{
+      width: 100%;
+      color: #B380B3;
+      background: none;
+      padding: 0px 0px 5px 0px;
+      pointer-events: none;
+    }
+
+    .avatar-panel button.ready{
+      background: white;
+      color: #B380B3;
+      border-radius: 0px;
+      padding: 5px;
+      margin-bottom: 3px;
+      pointer-events: auto;
+    }
+
+    .avatar-panel:after{
+      content: "";
+      width: 0; 
+      height: 0; 
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 15px solid #B380B3;
+      position: absolute;
+      bottom: -15px;
+      left: 80px;
+    }
+
+    b{
+      color: black;
+      font-weight: bold;
+    }
+
+    .header{
+      display: none;
+    }
+
+    .modal{
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      background: rgba(240,240,240,0.6);
+      overflow-y: auto;
+      padding: 50px;
+    }
+
+    .modal-panel{
+      position: absolute;
+      left: 0px;
+      right: 0px;
+
+      margin: auto;
+      padding: 50px;
+      background: white;
+      border: 1px solid #ddd;
+      max-width: 500px;
+
+      display: none;
+    }
+
+    button{
+      padding: 10px 15px;
+      background: #B380B3;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      color: white;
+      border-radius: 100px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .next-button, .complete-button, .reward-button{
+      display: block;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    .reward-button{
+      background: white;
+      color: orange;
+    }
+
+    .complete-button{
+      background: orange;
+    }
+
+    button.toggle{
+      width: 50px;
+      background: #999;
+      padding: 2px;
+      line-height: 0px;
+      text-align: left;
+      display: inline-block;
+      vertical-align: middle;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.toggle:after{
+      content: "";
+      border-radius: 100px;
+      background: white;
+      width: 25px;
+      height: 25px;
+      display: inline-block;
+      position: relative;
+      left: 0px;
+      transition: all 0.2s;
+    }
+
+    button.toggle.on{
+      background-color: #55dd99;
+    }
+
+    button.toggle.on:after{
+      left:21px;
+    }
+
+    .modal-lesson img{
+      margin-right: 10px;
+    }
+
+    .modal-panel question{
+      display: block;
+    }
+
+    .modal-panel question p{
+      width: 430px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 20px;
+    }
+
+    .image-set{
+      text-align: center;
+    }
+
+    .modal{
+      display: none;
+    }
+
+    .tutorial{
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      background: rgba(240,240,240,0.2);
+      display: none;
+    }
+
+    .tutorial-segment{
+      position: absolute;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      width: 300px;
+    }
+
+    .tutorial-segment.middle{
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      margin: auto;
+      height: 250px;
+    }
+
+    .tutorial-segment.top-left{
+      top: 20px;
+      left: 20px;
+    }
+
+    .tutorial-segment.bottom-left{
+      bottom: 20px;
+      left: 20px;
+    }
+
+    .tutorial-segment.top-right{
+      top: 20px;
+      right: 20px;
+    }
+
+    .tutorial-segment.bottom-right{
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .tutorial-segment ul{
+      padding: 0px;
+      margin: 10px 0px;
+    }
+
+    .tutorial-segment li{
+      display: inline-block;
+      list-style-type: none;
+      background: #eee;
+      padding: 0px;
+      margin: 0px;
+      border-radius: 100px;
+      margin: 0px 5px 5px 0px;
+
+      padding: 5px 15px;
+      cursor: pointer;
+    }
+
+     .tutorial-segment li.on{
+      background:#55dd99;
+     }
+
+     .self-rating.on{
+      background:#55dd99;
+     }
+
+     .list-of-things ul{
+      padding: 0px;
+      margin: 20px 10px;
+     }
+
+     .list-of-things li{
+      margin-left: 10px;
+     }
+
+     .avatar-panel-finish{
+      color: #ddd;
+      display: none;
+     }
+
+     .reward{
+      border-radius: 10px;
+      background: white;
+      color: white;
+
+
+      display: block;
+      width: 420px;
+      height: 7px;
+      margin-top: 30px;
+      position: relative;
+      font-size: 12px;
+
+     }
+
+     .reward:before{
+      content: "Self Awareness";
+      top: -22px;
+      left: 0px;
+      position: absolute;
+     }
+
+     .reward-points{
+      position: absolute;
+      right: 0px;
+      top: -20px;
+      background: orange;
+      color: white;
+      padding: 0px 10px;
+      border-radius: 100px;
+     }
+
+     .reward-bar{
+      width: 50%;
+      height: 100%;
+      background: #F86363;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      border-radius: 10px;
+      border-right: 1px solid #B380B3;
+     }
+
+     .reward:nth-of-type(1) .reward-bar{ background:#F86363; }
+     .reward:nth-of-type(2) .reward-bar{ background:#F8B852; }
+     .reward:nth-of-type(3) .reward-bar{ background:#F87ECE; }
+     .reward:nth-of-type(4) .reward-bar{ background:#99DC4D; }
+     .reward:nth-of-type(5) .reward-bar{ background:#83C8F3; }
+
+     .reward:nth-of-type(1) .reward-points{ background:#F86363; }
+     .reward:nth-of-type(2) .reward-points{ background:#F8B852; }
+     .reward:nth-of-type(3) .reward-points{ background:#F87ECE; }
+     .reward:nth-of-type(4) .reward-points{ background:#99DC4D; }
+     .reward:nth-of-type(5) .reward-points{ background:#83C8F3; }
+
+     .reward:nth-of-type(1):before{content: "Knowledge";}
+     .reward:nth-of-type(2):before{content: "Routine";}
+     .reward:nth-of-type(3):before{content: "Self Awareness";}
+     .reward:nth-of-type(4):before{content: "Stress Control";}
+     .reward:nth-of-type(5):before{content: "Wisdom";}
+
+     .modal-feedback{
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      margin: auto;
+      padding: 50px;
+      background: #B380B3;
+      border: 1px solid #ddd;
+      max-width: 500px;
+      display: none;
+     }
+
+     .modal-feedback h1{
+      color: white;
+     }
+
+     .reward-list{
+      min-height: 128px;
+      padding-left: 80px;
+      background-image: url('./man.png');
+      background-size: 128px;
+      background-position: -32px;
+      background-repeat: no-repeat;
+      margin: 50px 0px;
+     }
+
+  </style>
+  <script type="text/javascript">
+    $(function(){
+
+      function moveAvatar(){
+
+      }
+
+      function doNextTask(){
+        var $btn = $('.avatar-panel button.ready');
+        var i = $('.avatar-panel button').index($btn);
+
+        if(i<($('.avatar-panel button').length-1)){
+          $('.avatar-panel button').removeClass('ready').eq(i+1).addClass('ready');
+        } else {
+          $('.avatar-panel-day').hide();
+          $('.avatar-panel-sequence').hide();
+          $('.avatar-panel-finish').show();
+        }
+      }
+
+      //toggles
+      $('.toggle, .tutorial-segment li').click(function(){
+        $(this).toggleClass('on');
+      })
+
+      $('.self-rating').click(function(){
+        $('.self-rating').removeClass('on')
+        $(this).addClass('on');
+      })
+
+      //tutorial
+      $('.tutorial-segment').hide().eq(0).show();
+
+      $('.tutorial-segment .next-button').click(function(){
+        $('.tutorial-segment').hide().eq($('.tutorial-segment').index($(this).closest('.tutorial-segment'))+1).show();
+      });
+
+      $('.tutorial-segment .complete-button').click(function(){
+        $('.tutorial').hide();
+        doRewardSequence();
+      });
+
+      var data;
+
+      //lessons
+      $('.avatar-panel button').click(function(){
+
+        data = $(this).data();
+        if(data.modal == 'tutorial') $('.tutorial').show();
+        else{
+          $('.modal').show();
+          $('.modal-panel,.modal-feedback').hide();
+          $('.modal-panel'+data.modal).show();
+        }
+      })
+
+      //list making
+      $('.list-of-things .add-thing-button').click(function(){
+        var $li = $('<li contenteditable></li>').appendTo($(this).closest('.list-of-things').find('ul'));
+        $li.focus();
+      });
+
+      $('.modal .complete-button').click(function(){
+        $('.modal-panel').hide();
+
+        if(data.modal == '.modal-checkin'){
+          $('.avatar-panel').css({opacity:0}).delay(3200).animate({opacity:1});
+          $('path').eq(1).show().css({opacity:0}).delay(1500).animate({opacity:1},200);
+          $('.character-path-spot').eq(-1).show().css({opacity:0}).delay(100).animate({opacity:1},200);
+
+          $('.character').delay(500).animate({left:'55%',top:'70%'},1000);
+
+          $('.modal').css({opacity:0}).delay(3000).animate({opacity:1},200,doRewardSequence);
+        } else{
+          doRewardSequence();
+        }
+        
+      });
+
+      function doRewardSequence(){
+        $('.modal').show();
+        $('.modal-feedback').show();
+
+        var points = data.points.split(',');
+        console.log(data,points);
+        for(var i=0; i<points.length; i++){
+          $('.reward-points').eq(i).html('+ '+points[i]);
+          if(points[i] == 0) $('.reward-points').eq(i).hide();
+          else{
+            $('.reward-points').eq(i).show().css({opacity:0,top:0}).delay(300 + 100*i).animate({opacity:1,top:-20},100);
+            var p = $('.reward-bar').eq(i).width();
+            $('.reward-bar').eq(i).delay(500 + 100*i).animate({width:(p + points[i]*10)})
+          }
+        }
+      }
+
+      $('.modal .reward-button').click(function(){
+        $('.modal').hide();
+        doNextTask();
+      });
+
+      $('.reward').each(function(){
+        var $el = $('<div class="reward-bar">').appendTo(this);
+        $el.css({width:5+Math.random()*10+'%'});
+
+        var $el = $('<div class="reward-points">').appendTo(this);
+        $el.html("+ 1");
+      })
+
+    });
+
+
+  </script>
+</head>
+<body>
+  <div class='header'>
+    <h1>Teachers<b>Pet</b></h1>
+    <div class='elements'>
+      <div class='element'></div>
+      <div class='element'></div>
+      <div class='element'></div>
+      <div class='element'></div>
+    </div>
+    <div class="battery">
+      <div class='battery-body'></div><div class='battery-terminal'></div>
+    </div>
+  </div>
+  <div class='mood-plane'>
+    <div class='mood-plane-axes'></div>
+    <div class='mood-label left middle'>Cortisol</div>
+    <div class='mood-label right middle'>DHEA</div>
+    <div class='mood-label top center'>Sympathetic</div>
+    <div class='mood-label bottom center'>Parasympathetic</div>
+    <div class='mood-axis left middle'>Negative Emotions</div>
+    <div class='mood-axis right middle'>Positive Emotions</div>
+    <svg preserveAspectRatio=none width='100%' height='100%' viewBox='0 0 100 100'>
+      <path vector-effect='non-scaling-stroke' d="M30 40 L55 45 L45 55 L60 57 L75 65"></path>
+      <path vector-effect='non-scaling-stroke' d="M30 40 L55 45 L45 55 L60 57 L75 65 L55 70"></path>
+    </svg>
+    <div class='character-path'>
+      <div class="character-path-spot" style="left:30%;top:40%;"></div>
+      <div class="character-path-spot" style="left:55%;top:45%;"></div>
+      <div class="character-path-spot" style="left:45%; top:55%;"></div>
+      <div class="character-path-spot" style="left:60%;top:57%;"></div>
+      <div class="character-path-spot" style="left:75%;top:65%;"></div>
+      <div class="character-path-spot" style="left:55%;top:70%;"></div>
+    </div>
+    <div class='character' style="left:75%;top:65%;">
+      
+      <div class='avatar-panel'>
+        <h1 class="avatar-panel-day">Day 1</h1>
+        <div class='avatar-panel-sequence'>
+          <button class='ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>A Little Lesson</button>
+          <button data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
+          
+          <button data-points='1,0,0,0,0' data-modal='.modal-watch'>Watch This</button>
+          <button data-points='0,2,0,1,1' data-modal='.modal-exercise'>A Handy Exercise</button>
+          <button data-points='0,2,3,0,1' data-modal='tutorial'>A Quick Reflection</button>
+          <button data-points='2,2,1,2,0' data-modal='.modal-mission'>A Mission in the Wild</button>
+          <button data-points='0,0,1,0,2' data-modal='.modal-thought'>Food for Thought</button>
+        </div>
+        <div class='avatar-panel-finish'>
+          <h1>That's it for Today!</h1>
+          <p>See you tomorrow.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='modal'>
+    <div class='modal-panel modal-checkin'>
+      <h1>My Daily Check In</h1>
+
+      <h2>How are you feeling?</h2>
+      <p>Reflect on your physical, mental and emotional wellbeing during the last 24 hours.</p>
+      <p>Rate your day a score between 1 and 10.</p>
+      <button class='self-rating'>1</button>
+      <button class='self-rating'>2</button>
+      <button class='self-rating'>3</button>
+      <button class='self-rating'>4</button>
+      <button class='self-rating'>5</button>
+      <button class='self-rating'>6</button>
+      <button class='self-rating'>7</button>
+      <button class='self-rating'>8</button>
+      <button class='self-rating'>9</button>
+      <button class='self-rating'>10</button>
+      <br><br>
+
+      <h2>Today...</h2>
+        <question><p>I've experienced meaningful connections (with other people/myself/pets/nature/spirit/ etc.)</p><button class='toggle'></button></question>
+        <question><p>I've woken up feeling optimistic and looking forward to my day ahead.</p><button class='toggle'></button></question>
+        <question><p>I've been able to resolve or let go of my challenges at work.</p><button class='toggle'></button></question>
+        <question><p>I've been able to manage stress in the moment it happens.</p><button class='toggle'></button></question>
+        <question><p>I've been able to switch off after work.</p><button class='toggle'></button></question>
+        <question><p>I've felt enthusiastic about my life.</p><button class='toggle'></button></question>
+        <question><p>I've spent time doing things that bring me joy.</p><button class='toggle'></button></question>
+        <question><p>I've experienced good quality sleep.</p><button class='toggle'></button></question>
+        <question><p>I've felt pleased overall, about choices I've made for my health (food/exercise/mindfulness).</p><button class='toggle'></button></question>
+        <question><p>I've felt inner calm and peace.</p><button class='toggle'></button></question>
+        <question><p>I've felt in control of my life.</p><button class='toggle'></button></question>
+        <question><p>I've felt that I am able to positively influence my life.</p><button class='toggle'></button></question>
+        <button class='complete-button'>COMPLETE</button>
+        
+      </div>
+
+      <div class='modal-panel modal-lesson'>
+        <h1>A Little Lesson</h1>
+        <p>Recall the weather over the past 24 hours. Was it sunny? Rainy? Hot? Cold? A bit of everything?</p>
+        <div class='image-set'><img width=64px src='cloudy.png'/><img width=64px  src='rain.png'/><img width=64px src='sunny.png'/><img width=64px src='snowflake.png'/><img width=64px src='man-head-think-up.png'/></div>
+        <p>Now reflect on the same 24 hours - how did you feel? Were you happy? Angry? Excited? Maybe ‘four seasons in one day’ like the weather?</p>
+        <div class='image-set'><img width=64px src='man-head-think.png'/><img width=64px src='content.png'/><img width=64px src='angry.png'/><img width=64px src='excited.png'/></div>
+        <p>Looking at the weather over time, we see patterns. We call this ‘the climate’.</p>
+        <div class='image-set'><img width=64px src='global-warming.png'/><img width=64px src='man-head-think-up.png'/></div>
+        <p>And if we look at our emotions, feelings and thoughts over time, we can start to see patterns too. That's what this programme is for. To help see patterns that are helpful and unhelpful to your health and wellbeing.</p>
+        <div class='image-set'><img width=64px src='man-head-think.png'/><img width=64px src='analysis.png'/></div>
+        <p>If ‘knowledge is power’, then self knowledge is self empowerment.</p>
+        <p>This course is designed to help you enhance your personal wellbeing with care, compassion and kindness for yourself.</p>
+        <button class='complete-button'>COMPLETE</button>
+      </div>
+      <div class='modal-panel modal-watch'>
+        <h1>Watch This</h1>
+        <iframe width="500" height="300" src="https://www.youtube.com/embed/xNY0AAUtH3g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <button class='complete-button'>COMPLETE</button>
+      </div>
+      <div class='modal-panel modal-exercise'>
+        <h1>A Handy Exercise</h1>
+        <iframe width="500" height="300" src="https://www.youtube.com/embed/5DqTuWve9t8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <button class='complete-button'>COMPLETE</button>
+      </div>
+      <div class='modal-panel modal-mission'>
+        <h1>A Mission in the Wild</h1><br>
+        Take a few minutes to write down as many things as you can think of that make you happy.
+        <div class='list-of-things'>
+          <ul>
+          </ul>
+          <button class='add-thing-button'>+ ADD SOMETHING</button>
+        </div>
+        <br>
+        Over the next 24 hours, attempt to do one or more of these things in your everyday life.
+        <br><br>
+        <button class='complete-button'>COMPLETE</button>
+      </div>
+      <div class='modal-feedback'>
+        <h1>Task Complete</h1>
+        <ul class='reward-list'>
+          <li class='reward'></li>
+          <li class='reward'></li>
+          <li class='reward'></li>
+          <li class='reward'></li>
+          <li class='reward'></li>
+        </ul>
+        <button class='reward-button'>THANKS!</button>
+      </div>
+    <div class='modal-panel modal-thought'>
+      <h1>Food for Thought</h1>
+      <p>“The journey of a thousand miles begins with a single step.” Lao Tzu.</p>
+      <p>If we were to meet in a year, and you’d had the best year you’d ever had, what would that look like? And what is one step can you take today towards that happy future?</p>
+      <button class='complete-button'>COMPLETE</button>
+    </div>
+  </div>
+  <div class='tutorial'>
+      
+      <div class='tutorial-segment middle'>
+      <h1>A Quick Reflection</h1><br><br>
+      Looking at the grid, this (x) axis represents negative emotions and positive emotions and this (y) axis represents high heart rate and low heart rate. [The centre line represents normal heart rate.]<br><br><button class='next-button'>NEXT</button></div>
+      <div class='tutorial-segment top-left'>Over the last 3 weeks or so, what emotions have you felt that are <b>negative</b> and your heart rate is <b>high</b>?
+        <ul>
+          <li>Anger</li>
+          <li>Rage</li>
+          <li>Self-loathing</li>
+          <li>Terror</li>
+          <li>Despair</li>
+          <li>Hatred</li>
+          <li>Disgust</li>
+          <li>Stress</li>
+          <li>Fear</li>
+        </ul>
+        
+        <button class='next-button'>NEXT</button></div>
+      <div class='tutorial-segment bottom-left'>What about here - low heart rate and negative?
+        <ul>
+          <li>Hopeless</li>
+          <li>Worry</li>
+          <li>Depression</li>
+          <li>Boredom</li>
+          <li>Self-pity</li>
+          <li>Guilt</li>
+          <li>Shame</li>
+          <li>Anxiety</li>
+        </ul>
+
+        <button class='next-button'>NEXT</button></div>
+      <div class='tutorial-segment bottom-right'>Here - low heart rate and positive?
+        <ul>
+          <li>Love</li>
+          <li>Compassion</li>
+          <li>Care</li>
+          <li>Appreciation</li>
+          <li>Content</li>
+          <li>Calm</li>
+          <li>Happy</li>
+          <li>Interested</li>
+          <li>Peaceful</li>
+        </ul>
+        <button class='next-button'>NEXT</button></div>
+      <div class='tutorial-segment top-right'>Finally up here - high heart rate and positive?
+        <ul>
+          <li>Excitement</li>
+          <li>Enjoyment</li>
+          <li>Enthusiasm</li>
+          <li>Joy</li>
+          <li>Passion</li>
+          <li>Exhilaration</li>
+          <li>Inspiration</li>
+        </ul>
+        <button class='complete-button'>COMPLETE</button></div>
+      
+
+  </div>
+</body>
+</html>
