@@ -16,8 +16,8 @@
       font-size: 14px;
       line-height: 1.7em;
       color: #666;
-      background: #2567B2;
 
+      background: #eee;
     }
 
     h1,h2,h3,h4{
@@ -121,10 +121,11 @@
 
     .mood-plane{
       position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      bottom: 20px;
+      top: 5px;
+      left: 5px;
+      right: 25vw;
+      bottom: 5px;
+      transition: all 0.5s;
     }
 
     .character-path{
@@ -136,9 +137,13 @@
     }
 
     .mood-plane{
-      border: 1px solid white;
+
       background-image: url('./grid.png');
       background-position: center;
+    }
+
+    .mood-plane.squised{
+      
     }
 
     .mood-plane:after{
@@ -162,9 +167,10 @@
       height: 50px;
       line-height: 50px;
       text-align: center;
-      color: white;
+      color: #333;
       font-size: 20px;
       background: none;
+      background: #eee;
 
       font-family: 'Roboto Slab', serif;
     }
@@ -175,23 +181,24 @@
       background: #f5f5f5;
       border-radius: 10px;
       margin: auto;
-      width: 400px;
+      width: 250px;
       height: 50px;
       line-height: 50px;
       text-align: center;
-      color: white;
+      color: #333;
       font-size: 20px;
       background: none;
+      background: #eee;
       font-family: 'Roboto Slab', serif;
     }
 
     .mood-axis.left{
-      left: -160px;
+      left: -85px;
       transform: rotate(-90deg);
     }
 
     .mood-axis.right{
-      right: -160px;
+      right: -85px;
       transform: rotate(90deg);
     }
 
@@ -229,20 +236,20 @@
       right:  0px;
       top: 0px;
       bottom: 0px;
-      margin: auto;
       width: 0px;
       height: 0px;
+      margin: auto;
     }
 
     .mood-plane-axes:before{
       content: "";
-      width: 100%;
-      height: 2px;
+      width: 100vw;
+      height: 1px;
       position: absolute;
-      left: -25vw;
-      top: -1px;
+      left: -50vw;
+      top: 0px;
 
-      background: white;
+      background: #999;
     }
 
     .mood-plane-axes:after{
@@ -252,7 +259,7 @@
       position: absolute;
       top: -25vh;
       left: -1px;
-      background: white;
+      background: #333;
     }
 
     .character-path-spot{
@@ -260,16 +267,19 @@
     }
 
     .character-path-spot:after{
-      content:"";
+      content:"✘";
       position: absolute;
       left: -10px;
       top: -10px;
       width: 20px;
       height: 20px;
-      background: #2567B2;
-      border: 2px solid white;
+      text-align: center;
+      line-height: 20px;
+      font-size: 40px;
       box-sizing: border-box;
       border-radius: 100px;
+      transform: scaleY(0.5);
+      color: #25b270;
     }
 
     .character-path-spot:last-of-type{
@@ -306,8 +316,9 @@
       left: 0px;
       right: 0px;
       bottom: 0px;
-      stroke: white;
+      stroke: #25b270;
       stroke-width: 2px;
+      stroke-dasharray:2 4;
       fill: none;
 
     }
@@ -322,20 +333,21 @@
     }
 
     .avatar-panel{
-      background: #25b270;
+      background: none;
       padding: 10px;
-      position: absolute;
-      bottom: 150px;
-      width: 200px;
-      left: -100px;
+      position: fixed;
+      right: 0px;
+      width: 25vw;
+      right: 0px;
       box-sizing: border-box;
       text-align: center;
-      border: 1px solid white;
+      border: none;
     }
 
     .avatar-panel h1{
       display: block;
-      color: white;
+      color: black;
+      font-size: 12px;
     }
 
     .avatar-panel p{
@@ -344,44 +356,61 @@
     }
 
     .avatar-panel-sequence{
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       overflow: hidden;
-      margin-top: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
     }
 
     .avatar-panel button{
       width: 100%;
       color: #324A5E;
       background: none;
-      padding: 0px 0px 5px 10px;
+      line-height: 40px;
       pointer-events: none;
       text-align: left;
       position: relative;
+      padding: 0px;
+      padding-left: 40px;
+
+      background-position: 12px 12px;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      background-image: url('./notebook.png');
     }
 
+    .avatar-panel button.lesson{background-image: url('./notebook.png')}
+    .avatar-panel button.checkin{background-image: url('./checked.png')}
+    .avatar-panel button.watch{background-image: url('./youtube.png')}
+    .avatar-panel button.exercise{background-image: url('./yoga.png')}
+    .avatar-panel button.reflect{background-image: url('./light-bulb.png')}
+    .avatar-panel button.mission{background-image: url('./exercise.png')}
+    .avatar-panel button.quote{background-image: url('./quote.png')}
+
     .avatar-panel button.ready{
-      background: white;
+      background-color: #315588;
       border-radius: 0px;
-      padding: 5px 5px 5px 10px;
-      margin-bottom: 3px;
+
       pointer-events: auto;
+      color: white;
+      font-weight: bold;
     }
 
     .avatar-panel button.ready:after{
       content: "►";
-      background: orange;
+      
       color: white;
-      border-radius: 20px;
-      width: 15px;
-      height: 15px;
+     
       position: absolute;
-      right: 8px;
-      top: 7px;
-      line-height: 15px;
+      top: 0px;
+      right: 0px;
+      line-height: 40px;
       text-align: center;
-      font-size: 9px;
-      padding-left: 2px;
+      font-size: 20px;
+      width: 40px;
+      text-align: center;
     }
 
     .avatar-panel:after{
@@ -394,6 +423,7 @@
       position: absolute;
       bottom: -15px;
       left: 95px;
+      display: none;
     }
 
     b{
@@ -408,9 +438,9 @@
     .modal{
       position: fixed;
       top: 0px;
-      left: 0px;
       right: 0px;
       bottom: 0px;
+      left: 0px;
       background: rgba(50,74,94,0.6);
       overflow-y: auto;
     }
@@ -508,13 +538,19 @@
 
     .modal{
       display: none;
+
+      transition: 0.5s;
+    }
+
+    .modal.big{
+      
     }
 
     .tutorial{
       position: fixed;
       top: 0px;
       left: 0px;
-      right: 0px;
+      right: 25vw;
       bottom: 0px;
       background: rgba(240,240,240,0.2);
       display: none;
@@ -677,12 +713,65 @@
      .reward-list{
       min-height: 128px;
       padding-left: 80px;
-      background-image: url('./man-shiny.png');
+      background-image: url('./man.png');
       background-size: 128px;
       background-position: -32px;
       background-repeat: no-repeat;
       margin: 50px 0px;
      }
+
+     .mood-quad{
+      width: 50%;
+      height: 50%;
+      top: 0px;
+      left: 0px;
+      position: absolute;
+
+     }
+
+     .mood-quad:nth-of-type(2){
+      left: 50%;
+     }
+
+     .mood-quad:nth-of-type(3){
+      top: 50%;
+     }
+
+     .mood-quad:nth-of-type(4){
+      left: 50%;
+      top: 50%;
+     }
+
+     .mood-quad:after{
+      content: "";
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
+      background: white;
+      /*background-image: url('./bg.png');*/
+      position: absolute;
+      border-radius: 5px;
+      background-size: 50%;
+     }
+
+     .avatar-profile{
+      padding: 20px;
+      text-align: center;
+     }
+
+     .avatar-head{
+      width: 100px;
+      height: 100px;
+      background-color: #25b270;
+      background-image: url('./man.png');
+      background-size: 200%;
+      background-position: center top;
+      border-radius: 50px;
+      display: inline-block;
+     }
+
+
 
   </style>
   <script type="text/javascript">
@@ -701,6 +790,7 @@
         } else {
           $('.avatar-panel-day').hide();
           $('.avatar-panel-sequence').hide();
+          $('.avatar-panel h1').hide();
           $('.avatar-panel-finish').show();
         }
       }
@@ -736,6 +826,8 @@
         if(data.modal == 'tutorial') $('.tutorial').show();
         else{
           $('.modal').show();
+          $('.modal').addClass('big');
+          $('.mood-plane').addClass('squised');
           $('.modal-panel,.modal-feedback').hide();
           $('.modal-panel'+data.modal).show();
         }
@@ -751,7 +843,7 @@
         $('.modal-panel').hide();
 
         if(data.modal == '.modal-checkin'){
-          $('.avatar-panel').css({opacity:0}).delay(3200).animate({opacity:1});
+          //$('.avatar-panel').css({opacity:0}).delay(3200).animate({opacity:1});
           $('path').eq(1).show().css({opacity:0}).delay(1500).animate({opacity:1},200);
           $('.character-path-spot').eq(-1).show().css({opacity:0}).delay(100).animate({opacity:1},200);
 
@@ -782,7 +874,11 @@
       }
 
       $('.modal .reward-button').click(function(){
+
+        $('.modal').removeClass('big');
         $('.modal').hide();
+        $('.mood-plane').removeClass('squised');
+        $('.modal-feedback').hide();
         doNextTask();
       });
 
@@ -813,7 +909,10 @@
     </div>
   </div>
   <div class='mood-plane'>
-    <div class='mood-plane-axes'></div>
+    <div class='mood-quad'></div>
+    <div class='mood-quad'></div>
+    <div class='mood-quad'></div>
+    <div class='mood-quad'></div>
     <div class='mood-label left middle'>Cortisol</div>
     <div class='mood-label right middle'>DHEA</div>
     <div class='mood-label top center'>High Energy</div>
@@ -834,26 +933,36 @@
     </div>
     <div class='character' style="left:75%;top:65%;">
       
-      <div class='avatar-panel'>
-        <h1 class="avatar-panel-day">Day 1</h1>
-        <div class='avatar-panel-sequence'>
-          <button class='ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>Lesson</button>
-          <button data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
-          
-          <button data-points='1,0,0,0,0' data-modal='.modal-watch'>Watch This</button>
-          <button data-points='0,2,0,1,1' data-modal='.modal-exercise'>Exercise</button>
-          <button data-points='0,2,3,0,1' data-modal='tutorial'>Personal Reflection</button>
-          <button data-points='2,2,1,2,0' data-modal='.modal-mission'>Personal Mission</button>
-          <button data-points='0,0,1,0,2' data-modal='.modal-thought'>Food for Thought</button>
-        </div>
-        <div class='avatar-panel-finish'>
-          <h1>That's it for Today!</h1>
-          <p>See you tomorrow.</p>
-        </div>
-      </div>
+      
     </div>
   </div>
+  <div class='avatar-panel'>
+        <div class='avatar-profile'>
+          <div class='avatar-head'>
+
+          </div>
+        </div>
+        <h1>TODAY</h1>
+        <div class='avatar-panel-sequence'>
+          <button class='lesson ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>Lesson</button>
+          <button class='checkin' data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
+          <button class='watch' data-points='1,0,0,0,0' data-modal='.modal-watch'>Watch This</button>
+          <button class='exercise' data-points='0,2,0,1,1' data-modal='.modal-exercise'>Exercise</button>
+        </div>
+        <h1>OPTIONAL</h1>
+        <div class='avatar-panel-sequence'>
+          <button class='reflect' data-points='0,2,3,0,1' data-modal='tutorial'>Personal Reflection</button>
+          
+          <button class='mission' data-points='2,2,1,2,0' data-modal='.modal-mission'>Personal Mission</button>
+          <button class='quote' data-points='0,0,1,0,2' data-modal='.modal-thought'>Food for Thought</button>
+        </div>
+        <div class='avatar-panel-finish'>
+          <h2>That's it for Today!</h2>
+          <h2>See you tomorrow.</h2>
+        </div>
+      </div>
   <div class='modal'>
+    
     <div class='modal-panel modal-checkin'>
       <h1>My Daily Check In</h1>
 
