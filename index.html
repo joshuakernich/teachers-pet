@@ -398,6 +398,24 @@
       font-weight: bold;
     }
 
+    .avatar-panel button.done{
+      color: #ccc;
+    }
+
+    .avatar-panel button.done:after{
+      content: "☑";
+      
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 20px;
+      width: 40px;
+      text-align: center;
+
+    }
+
     .avatar-panel button.ready:after{
       content: "►";
       
@@ -786,6 +804,7 @@
         var i = $('.avatar-panel button').index($btn);
 
         if(i<($('.avatar-panel button').length-1)){
+          $('.avatar-panel button').eq(i).addClass('done');
           $('.avatar-panel button').removeClass('ready').eq(i+1).addClass('ready');
         } else {
           $('.avatar-panel-day').hide();
@@ -944,17 +963,12 @@
         </div>
         <h1>TODAY</h1>
         <div class='avatar-panel-sequence'>
-          <button class='lesson ready' data-points='1,0,2,0,0' data-modal='.modal-lesson'>Lesson</button>
-          <button class='checkin' data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
+          <button class='checkin ready' data-points='0,2,3,0,0' data-modal='.modal-checkin'>My Daily Check In</button>
+          <button class='lesson' data-points='1,0,2,0,0' data-modal='.modal-lesson'>Lesson</button>
           <button class='watch' data-points='1,0,0,0,0' data-modal='.modal-watch'>Watch This</button>
-          <button class='exercise' data-points='0,2,0,1,1' data-modal='.modal-exercise'>Exercise</button>
-        </div>
-        <h1>OPTIONAL</h1>
-        <div class='avatar-panel-sequence'>
           <button class='reflect' data-points='0,2,3,0,1' data-modal='tutorial'>Personal Reflection</button>
-          
+          <button class='exercise' data-points='0,2,0,1,1' data-modal='.modal-exercise'>Exercise</button>
           <button class='mission' data-points='2,2,1,2,0' data-modal='.modal-mission'>Personal Mission</button>
-          <button class='quote' data-points='0,0,1,0,2' data-modal='.modal-thought'>Food for Thought</button>
         </div>
         <div class='avatar-panel-finish'>
           <h2>That's it for Today!</h2>
@@ -1003,7 +1017,6 @@
         <p>Recall the weather over the past 24 hours. Was it sunny? Rainy? Hot? Cold? A bit of everything?</p>
         <div class='image-set'><img width=64px src='cloudy.png'/><img width=64px  src='rain.png'/><img width=64px src='sunny.png'/><img width=64px src='snowflake.png'/></div>
         <p>Now reflect on the same 24 hours - how did you feel? Were you happy? Angry? Excited? Maybe ‘four seasons in one day’ like the weather?</p>
-        <div class='image-set'><img width=64px src='content.png'/><img width=64px src='angry.png'/><img width=64px src='excited.png'/></div>
         <p>Looking at the weather over time, we see patterns. We call this ‘the climate’.</p>
         <div class='image-set'><img width=64px src='global-warming.png'/></div>
         <p>And if we look at our emotions, feelings and thoughts over time, we can start to see patterns too. That's what this programme is for. To help see patterns that are helpful and unhelpful to your health and wellbeing.</p>
