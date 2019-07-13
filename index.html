@@ -155,6 +155,7 @@
       top: 20px;
       left: 20px;
       background-size: 100%;
+      display: none;
     }
 
     .mood-label{
@@ -616,7 +617,19 @@
       margin: 10px 0px;
     }
 
-    .tutorial-segment li{
+    .mood-quad ul{
+      position: absolute;
+      width: 300px;
+      padding: 15px 10px 10px 15px;
+      margin: 0px;
+    }
+
+    .mood-quad:nth-of-type(1) ul{ top: 0px; left: 0px; }
+    .mood-quad:nth-of-type(2) ul{ top: 0px; right: 0px; text-align: right; }
+    .mood-quad:nth-of-type(3) ul{ bottom: 0px; left: 0px; }
+    .mood-quad:nth-of-type(4) ul{ bottom: 0px; right: 0px; text-align: right; }
+
+    .mood-quad li, .tutorial-segment li{
       display: inline-block;
       list-style-type: none;
       background: #eee;
@@ -624,9 +637,17 @@
       margin: 0px;
       border-radius: 100px;
       margin: 0px 5px 5px 0px;
-
       padding: 5px 15px;
       cursor: pointer;
+    }
+
+    .mood-quad li{
+      display: none;
+    }
+
+    .mood-quad li.on{
+      display: inline-block;
+      background:#55dd99;
     }
 
      .tutorial-segment li.on{
@@ -760,7 +781,7 @@
       top: 50%;
      }
 
-     .mood-quad:after{
+     .mood-quad:before{
       content: "";
       top: 2px;
       left: 2px;
@@ -827,11 +848,32 @@
       //tutorial
       $('.tutorial-segment').hide().eq(0).show();
 
+      function saveMoodsToQuad(idx){
+
+        var $elSegment = $('.tutorial-segment').eq(idx);
+        var $ul = $elSegment.find('ul').clone();
+
+        if(idx==1) $('.mood-quad').eq(0).html($ul);
+        if(idx==2) $('.mood-quad').eq(2).html($ul);
+        if(idx==3) $('.mood-quad').eq(3).html($ul);
+        if(idx==4) $('.mood-quad').eq(1).html($ul);
+      }
+
       $('.tutorial-segment .next-button').click(function(){
-        $('.tutorial-segment').hide().eq($('.tutorial-segment').index($(this).closest('.tutorial-segment'))+1).show();
+
+        var $elSegment = $(this).closest('.tutorial-segment');
+        var idx = $('.tutorial-segment').index($elSegment);
+        saveMoodsToQuad(idx);
+
+        $('.tutorial-segment').hide().eq(idx+1).show();
       });
 
       $('.tutorial-segment .complete-button').click(function(){
+
+        var $elSegment = $(this).closest('.tutorial-segment');
+        var idx = $('.tutorial-segment').index($elSegment);
+        saveMoodsToQuad(idx);
+
         $('.tutorial').hide();
         doRewardSequence();
       });
@@ -1082,6 +1124,7 @@
           <li>Disgust</li>
           <li>Stress</li>
           <li>Fear</li>
+          <li>+ Add</li>
         </ul>
         
         <button class='next-button'>NEXT</button></div>
@@ -1095,6 +1138,7 @@
           <li>Guilt</li>
           <li>Shame</li>
           <li>Anxiety</li>
+          <li>+ Add</li>
         </ul>
 
         <button class='next-button'>NEXT</button></div>
@@ -1109,6 +1153,7 @@
           <li>Happy</li>
           <li>Interested</li>
           <li>Peaceful</li>
+          <li>+ Add</li>
         </ul>
         <button class='next-button'>NEXT</button></div>
       <div class='tutorial-segment top-right'>Finally up here - high heart rate and positive?
@@ -1120,6 +1165,7 @@
           <li>Passion</li>
           <li>Exhilaration</li>
           <li>Inspiration</li>
+          <li>+ Add</li>
         </ul>
         <button class='complete-button'>COMPLETE</button></div>
       
