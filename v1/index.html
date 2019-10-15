@@ -927,7 +927,7 @@
         $('.modal-feedback').show();
 
         var points = data.points.split(',');
-        console.log(data,points);
+
         for(var i=0; i<points.length; i++){
           $('.reward-points').eq(i).html('+ '+points[i]);
           if(points[i] == 0) $('.reward-points').eq(i).hide();

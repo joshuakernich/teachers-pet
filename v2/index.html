@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>unmuddle</title>
+  <script type="text/javascript" src='../v1/jquery-3.4.1.min.js'></script>
+  <script type="text/javascript">
+    $(function(){
+
+      var DELAY_PER_WORD = 300;
+
+
+
+      var story = {
+        q:[{
+          text:["<img src='./woman-stressed.png'>","\"I think there’s something seriously wrong with me.","I physically can’t say no.","Even when i want to.","Now I’m a Staff Governor.\""],
+          choice:["Oh, this sounds like me.","Oh, boohoo!"],
+        }] 
+      }
+
+      var science = {
+        q:[{
+          text:["Knowing how to say no is an important life skill.","So why do we find it so hard?","There are several reasons:","<div class='info'><h1>1. Fear of conflict</h1><p>From the time we were small, we were taught to do as we were told by the adults in our life. We carry this worry into our adulthood and don’t want people to be angry with us, critical of us or to be punished. We want to please others and to feel loved.</p><h1>2. Deep desire to belong</h1><p>Research has shown that we have a tremendous need to belong to a peer group. To fit in and be part of the tribe.</p><h1>3. Protecting Others</h1><p>Sometimes we do things to please others. The fear of upsetting or disappointing others can prompt us to stretch ourselves, even if it’s not right for us.</p></div>"],
+          choice:['I can see that']
+        }]
+      }
+
+      var game = {
+       q:[{
+        text:"Recall a moment recently where you wanted to say no",
+        choice:["I was asked to take on extra work","I had to take an extra yard duty shift"],
+        },
+        {
+          text: "Can you think of a way to say <b>No</b> that works for you?",
+          choice: [ "Sure! I’ve got plenty of time!","OK, how about next week then?","I’m snowed under this week","I’m already doing xyz this term. How would you like me to prioritise abc now?","No" ],
+          response: ["Wait, what?","Not bad","Not bad","Not bad","Great!"]
+        },
+        {
+          text: "Say No again.",
+          choice:["No."],
+          response:["Great!"]
+        },
+        {
+          text: "In these moments, we often imagine dramatic consequences. What prevents you from saying <b>No</b>?",
+          choice:["I will feel guilty or anxious","The fallout will be terrible"],
+        },
+        {
+          text: "Will it really be that bad?",
+          choice:["Absolutely!","Probably Not."],
+          response:["Well, damn.","That's a relief."]
+        },
+        {
+          text: "Alright, one more.",
+          choice:["No."],
+          response:["Nice."]
+        }],
+      }
+
+      var untool = {
+        intro:"<div class='untool'><img src='./no.png'><h1>unyes</h1></div>",
+        q:[{
+          text:["<h1>unyes</h1>","Look for opportunities in your day to say <b>NO</b> in small, unimportant situations."],
+          choice:['Like what?']
+        },{
+          text:"Like, would you like a cup of tea?",
+          choice:['Nah'],
+          response:['Yep. Just like that.'],
+        },{
+          choice:["I'll give it a try","This isn't for me"],
+          response:["Awesome","Fair enough"],
+        }]
+      }
+
+      function doGame(g){
+
+        var $g = $('.prompt-game').clone().appendTo($('.content'));
+        var $q;
+        var q;
+        var iQuestion = 0;
+
+        function doNextQuestion(){
+
+          //if($q) $q.hide();
+
+          var l = 0;
+
+          q = g.q[iQuestion];
+          $q = $('.templates .prompt-question').clone().appendTo($g);
+
+          if(q.text && typeof(q.text)=='string') q.text = [q.text];
+
+          if(q.text){
+            for( var i in q.text){
+              var $p = $('<p>').html(q.text[i]).appendTo($q.find('.prompt-text'));
+              $p.css({opacity:0}).delay(l*DELAY_PER_WORD).animate({opacity:1});
+
+              if(q.text[i].indexOf('<') == 0) l += 5; // html counts as 5 words
+              else l += q.text[i].split(' ').length;
+            }
+          } else {
+            $q.find('.prompt-text').hide()
+          }
+
+          for(var c in q.choice) $('<button>').appendTo($q.find('.prompt-choices')).text(q.choice[c]).click(onChoice).css({opacity:0}).delay( l*DELAY_PER_WORD ).animate({opacity:1})
+
+          $('html, body').animate({scrollTop:$q.offset().top-50},1000);
+        }
+
+        function onChoice(e){
+
+          var idx = $q.find('button').index(e.currentTarget);
+          $(e.currentTarget).addClass('selected');
+
+          $q.find('button').each(function(i){
+            if(i!= idx) $(this).animate({opacity:0.2});
+          })
+
+          if(q.response && q.response[idx] ){
+            $q.find('.prompt-response').html('<p>'+q.response[idx]+'</p>').css({opacity:0}).delay(500).animate({opacity:1});
+            $('html, body').animate({scrollTop:$q.offset().top + $q.outerHeight()},1000);
+          }
+
+          
+
+          iQuestion++;
+
+          if(g.q[iQuestion]) setTimeout(doNextQuestion,1500);
+          else $g.delay((q.response && q.response[idx])?2000:1000).animate({opacity:0},500,doNextGame);
+          
+        }
+
+
+        if(g.intro){
+          var $intro = $("<div class='game-intro'>").appendTo($g).html('<div class="game-intro-inner">'+g.intro+'</div>');
+          $intro.css({opacity:0}).animate({opacity:1}).click(function(){
+            $intro.unbind('click').animate({opacity:0},500,function(){
+              $intro.remove();
+              doNextQuestion();
+            });
+          })
+
+        }else{
+          doNextQuestion();
+        }
+
+      }
+
+
+      var games = [
+        story,
+        science,
+        game,
+        untool,
+        {q:[{text:"That's it for today."}]},
+      ]
+
+      var iGame = 0;
+
+      function doNextGame(){
+
+        $('html, body').scrollTop(0);
+
+        $('.content .prompt-game').remove();
+        doGame(games[iGame]);
+        iGame++;
+      }
+
+      $('.toggle').click(function(){
+        $(this).toggleClass('on');
+      })
+      
+
+      $('.checkin button').click(function(){
+        $('.checkin').hide();
+        $('.content').show();
+        setTimeout(doNextGame,500);
+      });
+
+      $('.home button').click(function(){
+        $('.home').hide();
+        $('.checkin').show();
+        $('.checkin').css({opacity:0}).delay(500).animate({opacity:1});
+      });
+
+
+    })
+  </script>
+  <style type="text/css">
+
+    .game-intro{
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      max-width: 700px;
+      margin: auto;
+      background: #7799ff;
+      font-size: 100px;
+      color: white;
+      padding: 50px;
+    }
+
+    .untool{
+      width: 300px;
+      height: 300px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      margin: auto;
+      background: white;
+      border-radius: 50px;
+      border: 2px solid #333;
+    }
+
+    .untool img{
+      width: 250px;
+      position: absolute;
+      top: 10px;
+      left:25px;
+    }
+
+    .untool h1{
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      line-height: 40px;
+      font-size: 40px;
+      color: black;
+    }
+
+    .untool:before{
+      content:"";
+      width: 500px;
+      height: 500px;
+      z-index: -1;
+      background-image: url("./shine.png");
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      animation-name: spin;
+      animation-duration: 8s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    @keyframes spin{
+      0%{
+        transform:rotate(0deg);
+      }
+      100%{
+        transform:rotate(360deg);
+      }
+    }
+
+    @font-face {
+    font-family: 'MainFont';
+    src: url('./AlegreyaSans-Light.ttf'); /* IE9 Compat Modes */
+    }
+
+    body{
+      font-family: 'MainFont', sans-serif;
+      font-size: 30px;
+      color: #333;
+      background: #eee;
+      padding: 0px;
+      margin: 0px;
+    }
+
+
+    button{
+      font-size: inherit;
+      font-weight: inherit;
+      padding: 10px 25px;
+      margin: 10px 10px 10px 0px;
+      border-radius: 100px;
+      background: none;
+      border: 1px solid #7799ff;
+      color: #7799ff;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.selected{
+      background: #7799ff;
+      color: white;
+    }
+
+    .content{
+      
+      display: none;
+    }
+
+    .content p, .content h1{
+      margin: 20px 0px;
+    }
+
+    .prompt-choices,.prompt-text,.prompt-response{
+      
+    }
+
+    .lesson-stream{
+      display: none;
+    }
+
+    .templates{
+      display: none;
+    }
+
+    .info{
+      font-size: 18px;
+      text-align: left;
+      line-height: 1.5em;
+
+    }
+
+    h1{
+      margin: 20px 0px;
+      font-size: 45px;
+    }
+
+    .info h1{
+      font-weight: normal;
+      font-size: 30px;
+
+    }
+
+    .home{
+      
+    }
+
+    .untool-icon{
+      width: 100px;
+      height: 100px;
+      border-radius: 25px;
+      margin: 10px;
+      display: inline-block;
+      background: white;
+      border: 1px solid #333;
+      background-image: url('./lock.jpeg');
+      background-size: 100%;
+    }
+
+    .avatar{
+      width: 250px;
+      height: 250px;
+      background-image: url('./avatar-reverse.png');
+      background-size: 100%;
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+    }
+
+    .avatar:after{
+      content: "";
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 50px;
+      height: 50px;
+      box-sizing: border-box;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 25px;
+      background-image: url('./pencil.png');
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+
+    .today-list{
+      display: inline-block;
+      vertical-align: top;
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    .today-list h1{
+      font-size: 30px;
+    }
+
+    .today-list ul{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .today-list button{
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      position: relative;
+      text-align: left;
+    }
+
+    .today-list button:after{
+      content: "▶";
+      font-size: 50px;
+      vertical-align: middle;
+      position: absolute;
+      right: 20px;
+      top: -5px;
+
+    }
+
+    .today-list li{
+      padding: 0px;
+      list-style-type: none;
+      font-size: 20px;
+      font-weight: bold;
+      vertical-align: middle;
+      line-height: 1.5em;
+    }
+
+    .today-list li:before{
+      content: "";
+
+      vertical-align: middle;
+      border: 1px solid #333;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .today-list p{
+      font-size: 20px;
+      margin: 0px;
+      font-weight: bold;
+      line-height: 1.5em;
+    }
+
+    .today-list b{
+      background: url('./highlighter.png');
+      padding: 0px 10px;
+      display: inline-block;
+      background-size: fill;
+    }
+
+    h1 b{
+      color: #999;
+    }
+
+    .everything{
+      text-align: center;
+      max-width: 700px;
+      margin: auto;
+      padding: 50px;
+      background: white;
+      min-height: 100vh;
+    }
+
+    .toggle-list{
+      text-align: right;
+      padding: 0px;
+      margin: 0px;
+      list-style-type: none;
+      display: inline-block;
+      font-size: 20px;
+      line-height: 2em;
+    }
+
+    .toggle-list li{
+      position: relative;
+      padding-right: 60px;
+      cursor: pointer;
+    }
+
+    .toggle-list li:after{
+      content: "";
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      right: 23px;
+      top:8px;
+      background: white;
+      display: inline-block;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+
+    .toggle-list li.on:after{
+      right: 3px;
+    }
+
+    .toggle-list li.on:before{
+      background: #99ffdd;
+    }
+
+    .toggle-list li:before{
+      content: "";
+      width: 50px;
+      height: 30px;
+      border-radius: 100px;
+      background: #ddd;
+      display: inline-block;
+      vertical-align: middle;
+      position: absolute;
+      right: 0px;
+      top: 5px;
+      transition: all 0.2s;
+    }
+
+    .checkin{
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  <div class='everything'>
+  <div class='templates'>
+    <div class='prompt-game'>
+    </div>
+    <div class='prompt-question'>
+      <div class='prompt-text'></div>
+      <div class='prompt-choices'></div>
+      <div class='prompt-response'></div>
+    </div>
+  </div>
+  <div class="checkin">
+    <h1>Let's Check In</h1>
+    <hr>
+    <p>How are you today?</p>
+    <ul class='toggle-list'>
+      <li class='toggle'>Feeling good</li>
+    <li class='toggle'>Slept well</li>
+    <li class='toggle'>On top of things</li>
+  </ul>
+  <hr>
+    <p>Have you used any of your untools?</p>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <hr>
+    <button>Ok. I'm Done.</button>
+  </div>
+  <div class='home'>
+    <h1><b>un</b>muddle</h1>
+    <hr>
+    <div class='avatar'></div>
+    <div class='today-list'>
+      <h1>Joshua Kernich</h1>
+      <p><b>10%</b> unmuddled</p>
+      <p>Day <b>5</b> of 30</p>
+      <p><b>15</b> unpoints</p>
+      <h1>Today</h1>
+      <ul>
+        <li>My Daily Check-in</li>
+        <li>Learning To Say No</li>
+        <li>The Unyes Tool</li>
+      </ul>
+      <button>Let's Go</button>
+    </div>
+    <hr>
+
+    <h1>My <b>un</b>tools</h1>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+    <div class="untool-icon"></div>
+
+  </div>
+
+  <div class='content'>
+
+
+ 
+  </div>
+  </div>
+</body>
+</html>
