@@ -8,6 +8,75 @@
 
       var DELAY_PER_WORD = 300;
 
+      var story55 = {
+        q:[{
+          text:[
+          "<img src='./karen.jpg' style='width:250px;'>",
+          "A tense silence spreads across the playground.",
+          "I am acutely aware that every pair of eyes are now fixed on me and Jamie’s enraged mother.",
+          "<img src='./karen-yelling.jpg' style='width:250px;'>",
+          "“What are you going to do about it then? Huh? Miss Stevens!?”",
+          "“You know Jamie did nothing of the sort! You’re a liar!”",
+          "...",
+          "<img src='./marcia.jpg' style='width:250px;'>",
+          "“Say something”, I think to myself, “anything”. But no words came.",
+          "All I can sense is those 200 pairs of eyes fixed on me, my heart pounding in my chest, and an overwhelming desire for the ground to swallow me up. Whole.",
+          "Why can’t I think of anything to say?",
+          "3 years of teacher training has not prepared me for this."
+          ],
+          choice:["Oh, wow.","I've been there", "Who cares!?"],
+        }]
+      }
+
+      var science55 = {
+        q:[{
+          text:[
+            'Extreme stress takes our brain off line.',
+            '<div class="info"><p>Critical moments of challenge profoundly impact how our brains function. As teachers, who are constantly being put in challenging situations, it can be hard to think and respond quickly and clearly.</p><p>Finding it hard to think straight has nothing to do with our level of intellect, nor our ability to cope. Under acute stress, our neocortex (the smartest part of our brain), simply shuts down. Much of the reason for this lies in the natural variations of our heart rate.</p></div>'
+          ],
+          choice:['Interesting...']
+        },{
+          text:['<div class="info"><p>Our heart rate is never constant. At rest, it naturally oscillates up and down in a consistent, rhythmic pattern. This is called a coherent heart rhythm.</p><img src="./coherent.png"><p>When we experience stress, our heart rate varies chaotically. This is an incoherent heart rhythm.</p><img src="./incoherent.png"></div>'],
+          choice:['So what?']
+        },{
+          text:['<div class="info"><p>The way our hearts beat, moment to moment, profoundly impacts how our brain functions.</p><p>Under acute stress, a chaotic heart rhythm sends an alarm signal up the spinal column to the amygdala in the brain, effectively informing the brain that ‘your life is in danger’. This causes the neocortex (the smart part of your brain which helps you think clearly) to shut down, meaning that you can only make three choices in this moment -  run, fight or hide.</p>'],
+          choice:["So what's the answer?"]
+        },
+        {
+          text:['<div class="info"><p>Research from the HeartMath Institute has shown that controlled breathing can override this system, and get your brain back online in moments of acute stress.</p><p>Breathing in smoothly over 5 seconds and breathing out smoothly over 5 seconds can turn off the stress response and bring our brain back online. Once our heart is beating more coherently, this causes a very different signal to be sent up the spinal column, switching off the amygdala, and putting our smart neocortex back online. Helping us to think and communicate more effectively, and feel more in control.</p>'],
+          choice:["Cool!"]
+        },
+        
+        ]
+      }
+
+      var action55 = {
+        q:[{
+          text:[
+            "Let's try some 5-5 breathing. This will only take a few seconds.",
+            "5-5",
+          ],
+          choice:["That was easy enough","That sucked"]
+        },{
+          text:[
+            "Let's try it once more.",
+            "5-5"
+          ],
+          choice:["I feel more relaxed","I feel no different"],
+          response:["Great!","Well, it was worth a try."]
+        }]
+      }
+
+      var intention55 = {
+        intro:"<div class='untool'><div class='icon' style='background-image:url(./unbrainfreeze.png)'></div><h1>unbrainfreeze</h1></div>",
+        q:[{
+          text:[
+            "Practice the 5-5 breath every time you start to feel stressed over the next 24 hours. You can do it anywhere, anytime, with your eyes open or closed."
+          ],
+          choice:["Ok, I'm in.","Nah, forget it."]
+        }]
+      }
+
 
 
       var story = {
@@ -70,6 +139,53 @@
         }]
       }
 
+      function Activity55($el,onComplete){
+
+        var $activity = $('.templates .activity-5-5').clone().appendTo($el);
+        var $message = $activity.find('.breather-message');
+        var $lung0 = $activity.find('.breather-lung').eq(0);
+        var $lung1 = $activity.find('.breather-lung').eq(1);
+      
+        var timeStart;
+        var ticker;
+
+        function step(){
+          var seconds = (new Date().getTime()-timeStart)/1000;
+          var p = 0;
+          
+
+          if(seconds < 2){
+            $message.text('Get Ready!');
+          } else if (seconds > 32){
+            $message.text('All Done!');
+            clearInterval(ticker);
+            onComplete();
+          }else {
+            var loop = (seconds-2)%10;
+          
+            if(loop<5){
+              $message.text('Breathe in');
+              p = loop/5;
+            }
+            else{
+              $message.text('and out');
+              p = 1-(loop-5)/5;
+            }
+          }
+            
+          $lung0.css({left:p*10,transform:'scale('+(0.5+p*0.5)+') rotate('+-90*(1-p)+'deg)'});
+          $lung1.css({left:-p*10,transform:'scale('+(0.5+p*0.5)+') rotate('+90*(1-p)+'deg)'});
+        }
+
+        function click(){
+          timeStart = new Date().getTime();
+          if(ticker) clearInterval(ticker);
+          ticker = setInterval(step,50);
+        }
+
+        $activity.click(click);
+      }
+
       function doGame(g){
 
         var $g = $('.prompt-game').clone().appendTo($('.content'));
@@ -81,6 +197,10 @@
 
           //if($q) $q.hide();
 
+          function onCompleteActivity(){
+            $q.find('.prompt-choices').show();
+          }
+
           var l = 0;
 
           q = g.q[iQuestion];
@@ -90,17 +210,29 @@
 
           if(q.text){
             for( var i in q.text){
-              var $p = $('<p>').html(q.text[i]).appendTo($q.find('.prompt-text'));
-              $p.css({opacity:0}).delay(l*DELAY_PER_WORD).animate({opacity:1});
+              
 
-              if(q.text[i].indexOf('<') == 0) l += 5; // html counts as 5 words
-              else l += q.text[i].split(' ').length;
+              if(q.text[i].indexOf('<') == 0){
+                var $p = $('<div>').html(q.text[i]).appendTo($q.find('.prompt-text'));
+                $p.css({opacity:0}).delay(l*DELAY_PER_WORD).animate({opacity:1});
+                l += 5; // html counts as 5 words
+              } else if(q.text[i] == '5-5'){ 
+                //insert a 5-5 activity
+                activity = new Activity55($q.find('.prompt-text'), onCompleteActivity);
+                $q.find('.prompt-choices').hide();
+              }
+              else{
+                var $p = $('<p>').html(q.text[i]).appendTo($q.find('.prompt-text'));
+                $p.css({opacity:0}).delay(l*DELAY_PER_WORD).animate({opacity:1});
+                l += q.text[i].split(' ').length;
+              }
             }
           } else {
             $q.find('.prompt-text').hide()
           }
 
           for(var c in q.choice) $('<button>').appendTo($q.find('.prompt-choices')).text(q.choice[c]).click(onChoice).css({opacity:0}).delay( l*DELAY_PER_WORD ).animate({opacity:1})
+
 
           $('html, body').animate({scrollTop:$q.offset().top-50},1000);
         }
@@ -146,10 +278,16 @@
 
 
       var games = [
-        story,
-        science,
-        game,
-        untool,
+        
+        story55,
+        science55,
+        action55,
+        intention55,
+        
+        //story,
+        //science,
+        //game,
+        //untool,
         {q:[{text:"That's it for today."}]},
       ]
 
@@ -180,8 +318,6 @@
         $('.checkin').show();
         $('.checkin').css({opacity:0}).delay(500).animate({opacity:1});
       });
-
-
     })
   </script>
   <style type="text/css">
@@ -212,13 +348,19 @@
       background: white;
       border-radius: 50px;
       border: 2px solid #333;
+      text-align: center;
     }
 
-    .untool img{
-      width: 250px;
+    .untool .icon{
+      width: 230px;
+      height: 230px;
       position: absolute;
       top: 10px;
       left:25px;
+      margin: auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
     }
 
     .untool h1{
@@ -228,7 +370,8 @@
       right: 0px;
       line-height: 40px;
       font-size: 40px;
-      color: black;
+      color: #555;
+      font-weight: normal;
     }
 
     .untool:before{
@@ -285,6 +428,10 @@
       transition: all 0.2s;
     }
 
+    .activity-5-5{
+      overflow: hidden;
+    }
+
     button.selected{
       background: #7799ff;
       color: white;
@@ -301,6 +448,10 @@
 
     .prompt-choices,.prompt-text,.prompt-response{
       
+    }
+
+    .prompt-text p{
+      text-align: left;
     }
 
     .lesson-stream{
@@ -348,17 +499,49 @@
     .avatar{
       width: 250px;
       height: 250px;
-      background-image: url('./avatar-reverse.png');
-      background-size: 100%;
+      background-image: url('./avatar.jpg');
+      background-size: 60%;
+      background-position: center;
+      background-repeat: no-repeat;
       display: inline-block;
       position: relative;
       vertical-align: top;
+      border-radius: 500px;
+      border: 2px solid #333;
+    }
+
+    .avatar:before{
+      content: "";
+      position: absolute;
+      left: 70px;
+      top: 30px;
+      width: 110px;
+      height: 60px;
+      
+      background-image: url('./brain-sprite.png');
+      background-size: 300%;
+      
+
+
+      animation-name: brainsteps;
+      animation-timing-function: steps(3);
+      animation-iteration-count: infinite;
+      animation-duration: 0.3s;
+    }
+
+    @keyframes brainsteps{
+      0%{
+        background-position: 0%;
+      }
+      100%{
+        background-position: -300%;
+      }
     }
 
     .avatar:after{
       content: "";
       position: absolute;
-      right: 20px;
+      right: 0px;
       top: 20px;
       width: 50px;
       height: 50px;
@@ -510,11 +693,54 @@
       display: none;
     }
 
+    .breather{
+      width: 300px;
+      height: 300px;
+      position: relative;
+      margin: auto;
+      cursor: pointer;
+    }
+
+  
+    .breather-lung{
+      width: 100%;
+      height: 100%;
+      background-image: url("./breath-egg-1.png");
+      background-size: 100%;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      opacity: 0.5;
+    }
+
+    .breather-lung:nth-of-type(2){
+      transform: rotate(90deg);
+    }
+
+    .breather-message{
+      line-height: 300px;
+      position: absolute;
+      left: 0px;
+      width: 100%;
+      text-align: center;
+      
+    }
+
+
+
   </style>
 </head>
 <body>
   <div class='everything'>
+  
   <div class='templates'>
+    <div class='activity-5-5'>
+      <div class="breather">
+        <div class="breather-lung"></div>
+        <div class="breather-lung"></div>
+        <div class="breather-message">Click to Start</div>
+      </div>
+    </div>
     <div class='prompt-game'>
     </div>
     <div class='prompt-question'>
